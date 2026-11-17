@@ -206,7 +206,9 @@ function renderActiveConversation() {
   setPresenceLabel(conversation.contact.online);
   const stream = $("#message-stream");
   stream.innerHTML = "";
-  state.activeMessages.forEach((message) => appendMessage(message, false));
+  const messages = state.activeMessages;
+  state.activeMessages = [];
+  messages.forEach((message) => appendMessage(message, false));
   stream.scrollTop = stream.scrollHeight;
   $$(".list-item").forEach((item) => item.classList.toggle("active", Number(item.dataset.contactId) === conversation.contact.id));
 }
@@ -236,7 +238,8 @@ $("#message-form").addEventListener("submit", async (event) => {
   if (!body || !state.activeConversation) return;
   input.value = "";
   try {
-    await api(`/api/conversations/${state.activeConversation.id}/messages`, { method: "POST", body: JSON.stringify({ body }) });
+    const data = await api(`/api/conversations/${state.activeConversation.id}/messages`, { method: "POST", body: JSON.stringify({ body }) });
+    appendMessage(data.message);
     await loadConversations();
   } catch (error) {
     toast(error.message);
@@ -341,6 +344,9 @@ async function startCall(kind) {
 }
 
 async function preparePeerConnection(kind, targetUserId) {
+  if (!navigator.mediaDevices?.getUserMedia || !window.RTCPeerConnection) {
+    throw new Error("This browser does not support voice/video calls. Use HTTPS in a modern browser.");
+  }
   const audio = state.microphoneId ? { deviceId: { exact: state.microphoneId } } : true;
   const video = kind === "video" ? (state.cameraEnabled === false ? false : true) : false;
   state.localStream = await navigator.mediaDevices.getUserMedia({ audio, video });
@@ -365,6 +371,10 @@ function showIncomingCall(payload) {
   $("#incoming-call-handle").textContent = `@${payload.from_username}`;
   $("#incoming-call-kind").textContent = (payload.call_type || "voice").toUpperCase();
   show($("#call-layer"), true); show($("#incoming-call-card"), true); show($("#active-call-card"), false);
+}
+
+async function populateCallDevices() {
+  await enumerateDevices();
 }
 
 async function acceptIncomingCall() {
@@ -414,7 +424,10 @@ function showActiveCall() {
   show($("#call-layer"), true); show($("#incoming-call-card"), false); show($("#active-call-card"), true);
   $("#active-call-name").textContent = state.activeConversation?.contact?.display_name || state.incomingOffer?.from_username || "Operator";
   const video = state.currentCall?.kind === "video";
+  $("#active-call-card").classList.toggle("voice-mode", !video);
+  $("#active-call-card").classList.toggle("video-mode", video);
   $("#call-status-label").textContent = video ? "SECURE VIDEO LINK" : "SECURE VOICE LINK";
+  $("#call-mode-badge").textContent = video ? "VIDEO" : "VOICE";
   show($("#video-stage"), true);
   show($("#audio-avatar"), !video);
   $("#remote-video").style.display = video ? "block" : "none";
