@@ -1,7 +1,7 @@
 const CACHE_NAME = "edith-shell-v3";
 const SHELL = [
   "/",
-  "/static/styles.css?v=2",
+  "/static/styles.css?v=3",
   "/static/app.js",
   "/static/manifest.webmanifest",
   "/static/icon-192.png",
