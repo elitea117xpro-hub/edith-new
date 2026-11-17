@@ -91,6 +91,26 @@
           </div>
         </section>
 
+        <aside id="details-panel" class="details-panel panel-grid">
+          <div id="details-empty" class="details-empty">
+            <span class="details-icon">◎</span>
+            <p>Select a conversation</p>
+          </div>
+          <div id="details-content" class="details-content hidden">
+            <button id="details-close-button" class="details-close" type="button" aria-label="Close details">×</button>
+            <div id="details-avatar" class="details-avatar">?</div>
+            <h3 id="details-name">Contact</h3>
+            <p id="details-handle">@username</p>
+            <p id="details-status" class="details-status">OFFLINE</p>
+            <div class="details-actions">
+              <button id="details-voice-button" class="details-action" type="button"><span>☎</span> Voice</button>
+              <button id="details-video-button" class="details-action" type="button"><span>▣</span> Video</button>
+            </div>
+            <div class="details-section"><span>ABOUT</span><p>Direct E.D.I.T.H. contact</p></div>
+            <div class="details-section"><span>SHARED MEDIA</span><div class="details-media"><i></i><i></i><i></i></div></div>
+          </div>
+        </aside>
+
         <section id="contacts-panel" class="secondary-panel panel-grid hidden">
           <div class="section-heading"><div><p class="eyebrow">NETWORK DIRECTORY</p><h3>Contacts</h3></div><button id="contacts-add-button" class="primary-button compact">＋ ADD CONTACT</button></div>
           <div id="contacts-grid" class="contacts-grid"></div>
@@ -119,7 +139,7 @@
       <div class="call-header"><div><span id="call-mode-badge" class="call-mode-badge">VOICE</span><p class="eyebrow" id="call-status-label">SECURE LINK</p><h3 id="active-call-name">Contact</h3></div><span id="call-duration" class="call-duration">00:00</span></div>
       <div id="video-stage" class="video-stage"><video id="remote-video" autoplay playsinline></video><video id="local-video" autoplay muted playsinline></video><div id="audio-avatar" class="audio-avatar"><img src="/static/icon-192.png" alt="" /></div></div>
       <div class="call-device-row"><select id="call-mic-select" class="device-select"><option value="">MIC · DEFAULT</option></select><select id="call-speaker-select" class="device-select"><option value="">OUT · DEFAULT</option></select></div>
-      <div class="call-controls"><button id="mute-call-button" class="call-control">MIC ON</button><button id="camera-call-button" class="call-control">CAMERA ON</button><button id="hangup-call-button" class="hangup-button">END LINK</button></div>
+      <div class="call-controls"><button id="mute-call-button" class="call-control">◉<small>Mute</small></button><button id="camera-call-button" class="call-control">▣<small>Camera</small></button><button id="hangup-call-button" class="hangup-button">☎<small>End</small></button></div>
       <p id="call-error" class="form-message"></p>
     </div>
   </section>

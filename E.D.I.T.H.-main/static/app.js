@@ -196,11 +196,28 @@ async function openConversation(contactId) {
   }
 }
 
+function renderDetailsPanel(conversation) {
+  const contact = conversation?.contact;
+  if (!contact) {
+    show($("#details-empty"), true);
+    show($("#details-content"), false);
+    return;
+  }
+  show($("#details-empty"), false);
+  show($("#details-content"), true);
+  $("#details-avatar").textContent = initials(contact.display_name);
+  $("#details-name").textContent = contact.display_name;
+  $("#details-handle").textContent = `@${contact.username}`;
+  $("#details-status").textContent = contact.online ? "ONLINE · ACTIVE NOW" : "OFFLINE · LAST SEEN UNAVAILABLE";
+  $("#details-status").classList.toggle("online", Boolean(contact.online));
+}
+
 function renderActiveConversation() {
   const conversation = state.activeConversation;
   if (!conversation) return;
   show($("#empty-conversation"), false);
   show($("#active-conversation"), true);
+  renderDetailsPanel(conversation);
   $("#conversation-name").textContent = conversation.contact.display_name;
   $("#conversation-avatar").textContent = initials(conversation.contact.display_name);
   setPresenceLabel(conversation.contact.online);
@@ -459,6 +476,12 @@ function closeCall(notifyPeer = true) {
 
 $("#voice-call-button").addEventListener("click", () => startCall("voice"));
 $("#video-call-button").addEventListener("click", () => startCall("video"));
+$("#details-voice-button").addEventListener("click", () => startCall("voice"));
+$("#details-video-button").addEventListener("click", () => startCall("video"));
+$("#details-close-button").addEventListener("click", () => {
+  show($("#details-content"), false);
+  show($("#details-empty"), true);
+});
 $("#accept-call-button").addEventListener("click", acceptIncomingCall);
 $("#decline-call-button").addEventListener("click", () => { if (state.incomingOffer) sendRealtime({ type: "call-decline", to_user_id: state.incomingOffer.from_user_id }); closeCall(false); });
 $("#hangup-call-button").addEventListener("click", () => closeCall(true));
@@ -466,14 +489,14 @@ $("#mute-call-button").addEventListener("click", (event) => {
   const track = state.localStream?.getAudioTracks()[0];
   if (!track) return;
   track.enabled = !track.enabled;
-  event.currentTarget.textContent = track.enabled ? "MIC ON" : "MIC MUTED";
+  event.currentTarget.innerHTML = track.enabled ? "◉<small>Mute</small>" : "◉<small>Muted</small>";
   event.currentTarget.classList.toggle("accent", !track.enabled);
 });
 $("#camera-call-button").addEventListener("click", (event) => {
   const track = state.localStream?.getVideoTracks()[0];
   if (!track) return;
   track.enabled = !track.enabled;
-  event.currentTarget.textContent = track.enabled ? "CAMERA ON" : "CAMERA OFF";
+  event.currentTarget.innerHTML = track.enabled ? "▣<small>Camera</small>" : "▣<small>Camera off</small>";
 });
 
 async function enumerateDevices() {
