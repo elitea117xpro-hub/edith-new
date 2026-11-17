@@ -1,7 +1,7 @@
-const CACHE_NAME = "edith-shell-v1";
+const CACHE_NAME = "edith-shell-v2";
 const SHELL = [
   "/",
-  "/static/styles.css",
+  "/static/styles.css?v=2",
   "/static/app.js",
   "/static/manifest.webmanifest",
   "/static/icon-192.png",
