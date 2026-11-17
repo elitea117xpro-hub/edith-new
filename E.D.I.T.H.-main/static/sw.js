@@ -1,4 +1,4 @@
-const CACHE_NAME = "edith-shell-v2";
+const CACHE_NAME = "edith-shell-v3";
 const SHELL = [
   "/",
   "/static/styles.css?v=2",
